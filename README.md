@@ -2,16 +2,15 @@
 
 This project contains unofficial updates for the [CEB_ECON](https://carlosedubarreto.gumroad.com/l/CEB_ECON) Blender add-on. [ECON](https://github.com/YuliangXiu/ECON) is is designed for "Human digitization from a color image"
 
-##  Tested Environment
+## Prerequisites
 
-The plugin has been tested and validated under the following hardware and software configurations:
+Before using these updates, please ensure to install PyYAML as it is required for the feature allowing config (econ.yaml) modifications. To do this, you need to run the following Python code snippet in the Scripting tab within Blender:
 
-- OS: Windows 11 (Please note, only Windows OS is currently supported)
-- CPU: Intel i7 13700K
-- GPU: NVIDIA RTX 4080 with 16GB VRAM
-- RAM: 32GB
-
-performance may vary under different hardware configurations
+```python
+import subprocess
+import sys
+subprocess.check_call([sys.executable, "-m", "pip", "install", "PyYAML"])
+```
 
 ## Release Notes
 
@@ -32,3 +31,14 @@ performance may vary under different hardware configurations
 - Improvement of the Texture feature is a priority.
 - Plans to enable Unity integration are in the pipeline.
 - The 'use_ifnet' bug is acknowledged and a fix is currently being worked on.
+
+##  Tested Environment
+
+The plugin has been tested and validated under the following hardware and software configurations:
+
+- OS: Windows 11 (Please note, only Windows OS is currently supported)
+- CPU: Intel i7 13700K
+- GPU: NVIDIA RTX 4080 with 16GB VRAM
+- RAM: 32GB
+
+performance may vary under different hardware configurations
