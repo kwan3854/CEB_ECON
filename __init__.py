@@ -6,10 +6,10 @@ from . panel import *
 
 bl_info = {
     "name" : "CEB ECON",
-    "author" : "YuliangXiu, Carlos Barreto",
+    "author" : "YuliangXiu, Carlos Barreto, Lee KwanJoong",
     "description" : "",
     "blender" : (3, 3, 1),
-    "version" : (0, 10, 7),
+    "version" : ("KJ", 0, 8, 0),
     "location" : "UI > SidePanel",
     "warning" : "",
     "category" : "General"
