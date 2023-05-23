@@ -19,14 +19,14 @@ bl_info = {
 
 
 
-classes = (ECONMySettings,TL_PT_Panel
+classes = (ECONMySettings,ECON_PT_installation_panel
     ,CreateVirtualEnviroment,InstallSTLOnVenv,VenvPathSelect,InstallCompiler,ExecutePrompt
     ,UseHDRI,OpenOutputFolder
 
     ,DownloadECON,DownloadPytorch3d,ExeceteECON,LoadECONResult,ImportImage,DownloadModels,FinishECONInstall
     ,EnableButton,OpenBlenderWithConsole
     
-    ,ECON_SaveConfig)
+    ,ECON_SaveConfig, ECON_PT_generatation_panel)
     # ,ShowVertexColorTexture)
 
 

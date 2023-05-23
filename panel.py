@@ -89,10 +89,43 @@ def folder_venv_callback(scene, context):
 def update_bg_strength(self,context):
     bpy.data.worlds["Text2Light"].node_tree.nodes["Background"].inputs[1].default_value = self.fl_bg_strength
 
-class TL_PT_Panel(bpy.types.Panel):
+### TEST ###
+class ECON_PT_generatation_panel(bpy.types.Panel):
+    bl_label = "Model Generation"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'ECON Generate Models'
+
+    def draw(self, context):
+        layout = self.layout
+        econ_prop = context.scene.econ_prop
+
+        rowA = layout.row(align=True).box()
+        rowA.label(text='ECON Settings')
+        rowA.prop(econ_prop, "use_smpl_hand", index=0, text="Use SMPL Hand")
+        rowA.prop(econ_prop, "use_smpl_face", index=1, text="Use SMPL Face")
+        rowA.prop(econ_prop, "thickness")
+        rowA.prop(econ_prop, "k")
+        rowA.prop(econ_prop, "hps_type")
+        rowA.prop(econ_prop, "texture_src")
+        rowA.prop(econ_prop, "use_ifnet")
+        rowA.operator("econ.save_config")
+
+        rowB = layout.row(align=True).box()
+        rowB = rowB.column(align=True)
+        rowB.label(text='Generate Models')
+        rowB.operator('econ.import_image')
+        rowB.separator()
+        rowB.operator('econ.execute_econ')
+
+        # layout.operator("object.show_vertex_color_texture")
+
+######################
+
+class ECON_PT_installation_panel(bpy.types.Panel):
     bl_idname = "CEB_PT_ECON"
     bl_label = "ECON"
-    bl_category = "CEB"
+    bl_category = "ECON Install"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
@@ -103,24 +136,9 @@ class TL_PT_Panel(bpy.types.Panel):
         scene = context.scene
         econ_prop = context.scene.econ_prop
 
-        layout.prop(econ_prop, "use_smpl")
-        layout.prop(econ_prop, "thickness")
-        layout.prop(econ_prop, "k")
-        layout.prop(econ_prop, "hps_type")
-        layout.prop(econ_prop, "texture_src")
-        layout.prop(econ_prop, "use_ifnet")
-        layout.operator("econ.save_config")
-
-        # layout.operator("object.show_vertex_color_texture")
-
         path_venv = join(econ_prop.str_venv_path,econ_prop.str_custom_venv_name)
         flag_installed = join(econ_prop.str_venv_path,econ_prop.str_custom_venv_name,'Lib','site-packages','torch')
 
-        row = layout.row(align=True).box()
-        row = row.column(align=True)
-        row.operator('econ.import_image')
-        row.separator()
-        row.operator('econ.execute_econ')
         # row.operator('econ.load_econ')
         
         # row.prop(econ_prop,'str_sd_prompt')
@@ -372,7 +390,8 @@ from bpy.props import (StringProperty,
                        BoolProperty,
                       FloatProperty,
                       IntProperty,
-                      EnumProperty
+                      BoolVectorProperty,
+                        EnumProperty
                        )
 from bpy.types import (PropertyGroup)
 
@@ -393,11 +412,23 @@ class ECONMySettings(PropertyGroup):
         path_txt = ''
 
     # ECON_Properties settings
-    use_smpl: StringProperty(name="Use SMPL", default="")
+    # use_smpl: StringProperty(name="Use SMPL", default="")
+    use_smpl_hand: BoolProperty(name="Use SMPL Hand", default=(True))
+    use_smpl_face: BoolProperty(name="Use SMPL Face", default=(False))
     thickness: FloatProperty(name="Thickness", default=0.02)
     k: IntProperty(name="K", default=4)
-    hps_type: StringProperty(name="HPS Type", default="pixie")
-    texture_src: StringProperty(name="Texture Source", default="image")
+    hps_type: EnumProperty(name="HPS Type",
+                           items=[
+            ("pixie", "Pixie", ""),
+            ("pymaf", "Pymaf", "")
+        ],
+        default="pixie")
+    texture_src: EnumProperty(name="Texture Source", 
+                              items=[
+            ("image", "Image", ""),
+            ("stable_diffusion", "Stable Diffusion", "")
+        ],
+        default="image")
     use_ifnet: BoolProperty(name="Use IFNet", default=False)
 
 

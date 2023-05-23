@@ -627,8 +627,8 @@ class DownloadPytorch3d(Operator):
 
 class ExeceteECON(Operator):
     bl_idname = "econ.execute_econ"
-    bl_label = "Execute"
-    bl_description = "Execute Econ"
+    bl_label = "Generate 3D Model"
+    bl_description = "Generate 3D model from image"
 
     def execute(self,context):
 
@@ -718,8 +718,14 @@ class ECON_SaveConfig(Operator):
         yaml = YAML(typ='rt')  # Round trip loading and dumping
         with open(config_path, 'r') as f:
             data = yaml.load(f)
-
-        data['bni']['use_smpl'] = [item.strip() for item in bpy.context.scene.econ_prop.use_smpl.split(",")]
+        
+        use_smpl = [bpy.context.scene.econ_prop.use_smpl_hand, bpy.context.scene.econ_prop.use_smpl_face]
+        use_smpl_data = []
+        use_smpl_mapping = ["hand", "face"]
+        for i, flag in enumerate(use_smpl):
+            if flag:
+                use_smpl_data.append(use_smpl_mapping[i])
+        data['bni']['use_smpl'] = use_smpl_data
         data['bni']['thickness'] = float(econ_prop.thickness)
         data['bni']['k'] = int(econ_prop.k)
         data['bni']['hps_type'] = econ_prop.hps_type
@@ -808,6 +814,11 @@ class ImportImage(Operator, ImportHelper):
         shutil.copyfile(src, dst)
 
         return{'FINISHED'}
+    
+class CurrentImage(Operator):
+    bl_idname = "econ.Current_image"
+    bl_label = "Current Image"
+    bl_description = "Current Image File Name"
 
 
 def down_smpl_file(context,url,destination,down_file):
