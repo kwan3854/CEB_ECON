@@ -625,7 +625,7 @@ class DownloadPytorch3d(Operator):
 
         return{'FINISHED'}
 
-class ExeceteECON(Operator):
+class ExecuteECON(Operator):
     bl_idname = "econ.execute_econ"
     bl_label = "Generate 3D Model"
     bl_description = "Generate 3D model from image"
@@ -639,17 +639,15 @@ class ExeceteECON(Operator):
             self.report({'ERROR'}, "No image selected. Please select an image.")
             return {'CANCELLED'}
 
-        # Get the selected image path
-        selected_image_path = join('./examples', econ_prop.selected_image)
         path_venv = econ_prop.str_venv_path
         path_venv_full = join(path_venv,econ_prop.str_custom_venv_name)
         with open(join(path_addon,'execute_econ.bat'), "wt") as fout:
             fout.write('call \"'+join(path_venv_full,'Scripts','activate.bat')+'\"')
-            fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ' + selected_image_path + ' -out_dir ./results --loop_smpl 10')
-            # fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ./examples -out_dir ./results')
+            fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ./examples -out_dir ./results')
 
         result_folder = join(path_addon,'ECON','results','econ')
 
+        ################### Temporary bug resolution #######################
         bni = join(result_folder,'BNI','examples')
         obj = join(result_folder,'obj','examples')
         png = join(result_folder,'png','examples')
@@ -668,53 +666,97 @@ class ExeceteECON(Operator):
         econ_folder = join(path_addon,'ECON')
         current_folder = os.getcwd()
         os.chdir(econ_folder)
-        # os.system('start cmd /k \""'+join(path_addon,'install_pytorch3d.bat')+'" '+drive+' '+rest_path+' '+econ_prop.str_venv_path+'\"')
-        # os.system('start cmd /k "'+join(path_addon,'execute_econ.bat')+'"')
         subprocess.run([join(path_addon,'execute_econ.bat')]) #Executa o ECON
-        
         os.chdir(current_folder)
 
+        full_obj = join(result_folder,'obj','examples'
+                        ,os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
+        ###############################################################
 
-        #carrega obj no blender
-        full_obj = join(result_folder,'obj','examples','*_full.obj')
-
-        final_obj = sorted(glob.glob(full_obj), key=os.path.getmtime) #ordena os FULL.obj
-
-        bpy.ops.wm.obj_import(filepath=final_obj[-1]) #import o ultimo
+        # =========this code should be used when the ECON Windows version directory structure is fixed===========
+        # full_obj = join(result_folder,'obj'
+        #                 ,os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
+        # =======================================================================================================
+        
+        bpy.ops.wm.obj_import(filepath=full_obj)
 
 
         return{'FINISHED'}
 
 
-class LoadECONResult(Operator):
-    bl_idname = "econ.load_econ"
-    bl_label = "Load"
-    bl_description = "Load"
+class ExecuteAvatarizer(Operator):
+    bl_idname = "econ.execute_avatarizer"
+    bl_label = "Generate Animatable 3D Model"
+    bl_description = "Generate animatable 3D model in T pose"
 
     def execute(self,context):
-
         path_addon = os.path.dirname(os.path.abspath(__file__))
         econ_prop = context.scene.econ_prop
+    
+        # Check if an image is selected
+        if econ_prop.selected_image == "":
+            self.report({'ERROR'}, "No image selected. Please select an image.")
+            return {'CANCELLED'}
+        
+        # Check if the selected image's corresponding full.obj file exists
+        result_folder = join(path_addon,'ECON','results','econ')
+        full_obj = join(result_folder, 'obj', 'examples',
+                        os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
+        
+        # =========this code should be used when the ECON Windows version directory structure is fixed===========
+        # full_obj = join(result_folder, 'obj',
+        #                 os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
+        # =======================================================================================================
+        
+        if not os.path.isfile(full_obj):
+            self.report({'ERROR'}, "No full.obj file exits. Please generate 3D model first")
+            return {'CANCELLED'}
+        
+        ################### Temporal bug resolution #######################
+        directories = [
+            join(result_folder,'BNI','examples'),
+            join(result_folder,'obj','examples'),
+            join(result_folder,'png','examples'),
+            join(result_folder,'vid','examples'),
+        ]
+
+        for directory in directories:
+            # Check if directory exists
+            if not os.path.exists(directory):
+                print(f"The directory {directory} does not exist.")
+                continue
+
+            # Get the list of all files
+            for filename in os.listdir(directory):
+                file_path = os.path.join(directory, filename)
+
+                # Ensure that it's a file, not a directory or a sub-directory
+                if os.path.isfile(file_path):
+                    destination_path = os.path.join(os.path.dirname(directory), filename)
+
+                    # Copy the file
+                    shutil.copy(file_path, destination_path)
+                    print(f"Copied {file_path} to {destination_path}")
+        ####################################################################
+        
         path_venv = econ_prop.str_venv_path
         path_venv_full = join(path_venv,econ_prop.str_custom_venv_name)
+        with open(join(path_addon,'execute_avatarizer.bat'), "wt") as fout:
+            fout.write('call \"'+join(path_venv_full,'Scripts','activate.bat')+'\"')
+            fout.write('\npython -m apps.avatarizer -n ' + os.path.splitext(econ_prop.selected_image)[0])
         
+        econ_folder = join(path_addon,'ECON')
+        current_folder = os.getcwd()
+        os.chdir(econ_folder)
+        subprocess.run([join(path_addon,'execute_avatarizer.bat')])
+        os.chdir(current_folder)
+
         result_folder = join(path_addon,'ECON','results','econ')
-
-        # full_obj = join(result_folder,'obj','examples','*.obj')
-        full_obj = join(result_folder,'obj','examples','*_full.obj')
-
-        final_obj = sorted(glob.glob(full_obj), key=os.path.getmtime)
-
-        bpy.ops.wm.obj_import(filepath=final_obj[-1])
-        # bpy.ops.wm.obj_import(filepath="D:\\0_Programs\\CEB_ECON_prj\\CEB_ECON\\ECON\\results\\econ\\obj\\examples\\304e9c4798a8c3967de7c74c24ef2e38_0_full.obj", directory="D:\\0_Programs\\CEB_ECON_prj\\CEB_ECON\\ECON\\results\\econ\\obj\\examples\\", files=[{"name":"304e9c4798a8c3967de7c74c24ef2e38_0_full.obj", "name":"304e9c4798a8c3967de7c74c24ef2e38_0_full.obj"}])
-
+        mesh = join(result_folder,'cache'
+                        ,os.path.splitext(econ_prop.selected_image)[0], 'mesh.obj')
+        bpy.ops.wm.obj_import(filepath=mesh)
 
         return{'FINISHED'}
-    
-class LoadAvatarizerResult(Operator):
-    bl_idname = "econ.load_avatar"
-    bl_label = "Load Avartar"
-    bl_description = "Load Avatar"
     
 ############################ TEST ######################################
 

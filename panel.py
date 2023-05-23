@@ -118,6 +118,8 @@ class ECON_PT_generatation_panel(bpy.types.Panel):
         rowB.operator('econ.import_image')
         rowB.separator()
         rowB.operator('econ.execute_econ')
+        rowB.separator()
+        rowB.operator('econ.execute_avatarizer')
 
         # layout.operator("object.show_vertex_color_texture")
 
@@ -139,28 +141,6 @@ class ECON_PT_installation_panel(bpy.types.Panel):
 
         path_venv = join(econ_prop.str_venv_path,econ_prop.str_custom_venv_name)
         flag_installed = join(econ_prop.str_venv_path,econ_prop.str_custom_venv_name,'Lib','site-packages','torch')
-
-        # row.operator('econ.load_econ')
-        
-        # row.prop(econ_prop,'str_sd_prompt')
-        # row.separator()
-        # row.operator('text2light.execute',text='Execute 4K').option = 1
-        # # row.operator('text2light.execute',text='Execute 0.5K').option = 2
-        # row.operator('text2light.use_hdri')
-        # row.prop(econ_prop,'fl_bg_strength')
-        # _label_multiline(
-        #     context=context,
-        #     text='Full Prompt: '+econ_prop.str_sd_prompt,
-        #     parent=row
-        #     )
-        # row.operator('text2light.open_output_folder')
-        
-           
-        # row = layout.box()
-        # row = row.column(align=True)
-        # row_sub = row.column(align=True)
-        # row_sub.label(text='Type of Process')
-        
         
         rowb = layout.row(align=True).box()
         rowb = rowb.column(align=True)

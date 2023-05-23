@@ -27,3 +27,6 @@ torchvision==0.13.1+cu116
 #unpack 7z
 pyunpack==0.3
 patool==1.12
+
+#xatlas for avatarizer
+xatlas

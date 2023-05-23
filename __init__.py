@@ -23,10 +23,10 @@ classes = (ECONMySettings,ECON_PT_installation_panel
     ,CreateVirtualEnviroment,InstallSTLOnVenv,VenvPathSelect,InstallCompiler,ExecutePrompt
     ,UseHDRI,OpenOutputFolder
 
-    ,DownloadECON,DownloadPytorch3d,ExeceteECON,LoadECONResult,ImportImage,DownloadModels,FinishECONInstall
+    ,DownloadECON,DownloadPytorch3d,ExecuteECON,ImportImage,DownloadModels,FinishECONInstall
     ,EnableButton,OpenBlenderWithConsole
     
-    ,ECON_SaveConfig, ECON_PT_generatation_panel, LoadAvatarizerResult)
+    ,ECON_SaveConfig, ExecuteAvatarizer, ECON_PT_generatation_panel)
     # ,ShowVertexColorTexture)
 
 
@@ -42,6 +42,7 @@ def register():
     bpy.types.Scene.ceb_econ_venv = bpy.props.BoolProperty(default=False)
 
     
+
 
 def unregister():
     from bpy.utils import unregister_class
