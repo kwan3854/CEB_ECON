@@ -114,6 +114,7 @@ class ECON_PT_generatation_panel(bpy.types.Panel):
         rowB = layout.row(align=True).box()
         rowB = rowB.column(align=True)
         rowB.label(text='Generate Models')
+        rowB.label(text='Selected Image: ' + context.scene.econ_prop.selected_image)
         rowB.operator('econ.import_image')
         rowB.separator()
         rowB.operator('econ.execute_econ')
@@ -413,6 +414,7 @@ class ECONMySettings(PropertyGroup):
 
     # ECON_Properties settings
     # use_smpl: StringProperty(name="Use SMPL", default="")
+    selected_image: StringProperty(name="Selected Image", default="")
     use_smpl_hand: BoolProperty(name="Use SMPL Hand", default=(True))
     use_smpl_face: BoolProperty(name="Use SMPL Face", default=(False))
     thickness: FloatProperty(name="Thickness", default=0.02)

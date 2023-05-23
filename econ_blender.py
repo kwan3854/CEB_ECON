@@ -631,14 +631,21 @@ class ExeceteECON(Operator):
     bl_description = "Generate 3D model from image"
 
     def execute(self,context):
-
         path_addon = os.path.dirname(os.path.abspath(__file__))
         econ_prop = context.scene.econ_prop
+
+        # Check if an image is selected
+        if econ_prop.selected_image == "":
+            self.report({'ERROR'}, "No image selected. Please select an image.")
+            return {'CANCELLED'}
+
+        # Get the selected image path
+        selected_image_path = join('./examples', econ_prop.selected_image)
         path_venv = econ_prop.str_venv_path
         path_venv_full = join(path_venv,econ_prop.str_custom_venv_name)
         with open(join(path_addon,'execute_econ.bat'), "wt") as fout:
             fout.write('call \"'+join(path_venv_full,'Scripts','activate.bat')+'\"')
-            fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ./examples -out_dir ./results --loop_smpl 10')
+            fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ' + selected_image_path + ' -out_dir ./results --loop_smpl 10')
             # fout.write('\npython -m apps.infer -cfg ./configs/econ.yaml -in_dir ./examples -out_dir ./results')
 
         result_folder = join(path_addon,'ECON','results','econ')
@@ -703,6 +710,11 @@ class LoadECONResult(Operator):
 
 
         return{'FINISHED'}
+    
+class LoadAvatarizerResult(Operator):
+    bl_idname = "econ.load_avatar"
+    bl_label = "Load Avartar"
+    bl_description = "Load Avatar"
     
 ############################ TEST ######################################
 
@@ -803,6 +815,7 @@ class ImportImage(Operator, ImportHelper):
         src = self.filepath
 
         name_file = os.path.basename(src)
+        econ_prop.selected_image = name_file
 
         dst = join(img_folder,name_file)
 

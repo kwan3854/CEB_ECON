@@ -26,7 +26,7 @@ classes = (ECONMySettings,ECON_PT_installation_panel
     ,DownloadECON,DownloadPytorch3d,ExeceteECON,LoadECONResult,ImportImage,DownloadModels,FinishECONInstall
     ,EnableButton,OpenBlenderWithConsole
     
-    ,ECON_SaveConfig, ECON_PT_generatation_panel)
+    ,ECON_SaveConfig, ECON_PT_generatation_panel, LoadAvatarizerResult)
     # ,ShowVertexColorTexture)
 
 
