@@ -30,3 +30,6 @@ patool==1.12
 
 #xatlas for avatarizer
 xatlas
+
+#loguru
+loguru
