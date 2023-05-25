@@ -843,14 +843,15 @@ class ExecuteTEXTure(Operator):
         data["guide"]["reference_texture"] = os.path.join(
             "cache", file_name, "mask.png"
         )
+        data["guide"]["use_inpainting"] = True
         data["guide"]["texture_resolution"] = 1024
-        data["guide"]["guidance_scale"] = 10
+        data["guide"]["guidance_scale"] = 7
         data["guide"]["texture_interpolation_mode"] = "bilinear"
-
         data["optim"]["seed"] = 3
 
         data["render"]["front_offset"] = 0
-        data["render"]["n_views"] = 4
+        data["render"]["n_views"] = 6
+        data["render"]["views_after"] = [[180, 30], [180, 150], [180, 1], [180, 180]]
 
         with open(config_path, "w") as f:
             yaml.dump(data, f)
