@@ -18,6 +18,8 @@ import shutil
 import bpy
 import os
 import yaml
+import urllib.request
+import zipfile
 from bpy.props import StringProperty, FloatProperty, BoolProperty, IntProperty
 from bpy.types import Operator, Panel, PropertyGroup
 from ruamel.yaml import YAML
@@ -186,13 +188,34 @@ def download_texture_exec(context):
     src = join(path_addon, "TEXTure_for_ECON-main")
     dest = join(path_addon, "ECON", "TEXTure")
     download_path = join(path_addon, "TEXTure_github.zip")
+    unzip_dir = join(path_addon, "ECON")
+    renamed_dir = join(unzip_dir, "TEXTure")
     url = "https://github.com/kwan3854/TEXTure_for_ECON/archive/refs/heads/main.zip"
 
     torch_ver_cuda_ver = "torch-1.12.1_cu116"  # TODO: Update this to match your system's torch and cuda versions
 
+    # Download the zip file
+    with urllib.request.urlopen(url) as response, open(download_path, "wb") as out_file:
+        shutil.copyfileobj(response, out_file)
+        print("File downloaded successfully")
+
+    # Unzip the file
+    with zipfile.ZipFile(download_path, "r") as zip_ref:
+        zip_ref.extractall(unzip_dir)
+        print("File unzipped successfully")
+
+    # Rename the extracted folder
+    os.rename(os.path.join(unzip_dir, "TEXTure_for_ECON-main"), renamed_dir)
+    print("Folder renamed successfully")
+
+    # Delete the downloaded zip file
+    os.remove(download_path)
+    print("Downloaded zip file removed successfully")
+
     if os.path.exists(path_venv_activate):
         with open(path_venv_activate, "rt") as fin:
             with open(join(path_addon, "install_TEXTure_req.bat"), "wt") as fout:
+                fout.write('call "' + path_venv_activate + '"\n')
                 for line in fin:
                     fout.write(line)
                 # original requirements.txt has problems. uncommnet line 3 to 17.
@@ -200,20 +223,13 @@ def download_texture_exec(context):
                     f"""
                     cd "{path_addon}"
                     echo --------------------------------------------------
-                    echo Downloading and unzipping TEXTure...
-                    python -m urllib.request {url} {download_path}
-                    python -m zipfile -e {download_path} {path_addon}
-                    echo Renaming and removing the zip file...
-                    python -m os.rename {src} {dest}
-                    python -m os.remove {download_path}
-                    echo --------------------------------------------------
                     echo Installing TEXTure dependencies...
                     python -mpip install -r "{join(dest, 'requirements.txt')}"
                     python -mpip install kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/{torch_ver_cuda_ver}.html
                     echo --------------------------------------------------
                     echo YOU CAN CLOSE THIS WINDOW NOW
                     echo --------------------------------------------------
-                """
+                    """
                 )
         print("Re created install_TEXTure_req.bat")
 
@@ -624,8 +640,6 @@ class DownloadECON(Operator):
         dest = join(path_addon, "ECON")
 
         if not os.path.exists(dest):
-            import urllib.request
-
             # url = 'https://github.com/YuliangXiu/ECON/archive/'+archive_ref+'.zip'
             url = "https://github.com/kwan3854/ECON/archive/refs/heads/master.zip"
             download_path = join(path_addon, "ECON_github.zip")
@@ -775,22 +789,9 @@ class DownloadTEXTure(Operator):
         download_texture_exec(context)
         path_addon = os.path.dirname(os.path.abspath(__file__))
 
-        dest = join(path_addon, "ECON", "TEXTure")
-
         current_folder = os.getcwd()
-        os.chdir(dest)
-        # Execute the batch file
+
         subprocess.run([join(path_addon, "install_TEXTure_req.bat")], cwd=path_addon)
-        os.chdir(current_folder)
-
-        # # # Copy cache directory every time before running TEXTure
-        # # src_dir = join(path_addon, "ECON", "results", "econ", "cache")
-        # # dest_dir = join(dest, "cache")
-
-        # # if os.path.exists(dest_dir):
-        # #     shutil.rmtree(dest_dir)
-
-        # # copytree(src_dir, dest_dir)
 
         # disable the button
         econ_prop = context.scene.econ_prop
@@ -850,7 +851,7 @@ class ExecuteTEXTure(Operator):
         data["optim"]["seed"] = 3
 
         data["render"]["front_offset"] = 0
-        data["render"]["n_views"] = 6
+        data["render"]["n_views"] = 4
         data["render"]["views_after"] = [[180, 30], [180, 150], [180, 1], [180, 180]]
 
         with open(config_path, "w") as f:
@@ -908,6 +909,19 @@ class ExecuteECON(Operator):
 
         result_folder = join(path_addon, "ECON", "results", "econ")
 
+        # make sure the result folder exists
+        if not (
+            os.path.exists(join(result_folder, "BNI"))
+            and os.path.exists(join(result_folder, "obj"))
+            and os.path.exists(join(result_folder, "png"))
+            and os.path.exists(join(result_folder, "vid"))
+        ):
+            os.makedirs(result_folder, exist_ok=True)
+            os.mkdir(join(result_folder, "BNI"))
+            os.mkdir(join(result_folder, "obj"))
+            os.mkdir(join(result_folder, "png"))
+            os.mkdir(join(result_folder, "vid"))
+
         ################### Temporary bug resolution #######################
         bni = join(result_folder, "BNI", "examples")
         obj = join(result_folder, "obj", "examples")
@@ -915,13 +929,13 @@ class ExecuteECON(Operator):
         vid = join(result_folder, "vid", "examples")
 
         if not os.path.exists(bni):
-            os.makedirs(bni)
+            os.symlink(join(result_folder, "BNI"), bni)
         if not os.path.exists(obj):
-            os.makedirs(obj)
+            os.symlink(join(result_folder, "obj"), obj)
         if not os.path.exists(png):
-            os.makedirs(png)
+            os.symlink(join(result_folder, "png"), png)
         if not os.path.exists(vid):
-            os.makedirs(vid)
+            os.symlink(join(result_folder, "vid"), vid)
 
         econ_folder = join(path_addon, "ECON")
         current_folder = os.getcwd()
@@ -929,18 +943,50 @@ class ExecuteECON(Operator):
         subprocess.run([join(path_addon, "execute_econ.bat")])  # Executa o ECON
         os.chdir(current_folder)
 
-        full_obj = join(
-            result_folder,
-            "obj",
-            "examples",
-            os.path.splitext(econ_prop.selected_image)[0] + "_0_full.obj",
-        )
+        # full_obj = join(
+        #     result_folder,
+        #     "obj",
+        #     "examples",
+        #     os.path.splitext(econ_prop.selected_image)[0] + "_0_full.obj",
+        # )
         ###############################################################
 
         # =========this code should be used when the ECON Windows version directory structure is fixed===========
-        # full_obj = join(result_folder,'obj'
-        #                 ,os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
+        full_obj = join(
+            result_folder,
+            "obj",
+            os.path.splitext(econ_prop.selected_image)[0] + "_0_full.obj",
+        )
         # =======================================================================================================
+
+        # ################### Temporal bug resolution #######################
+        # directories = [
+        #     join(result_folder, "BNI", "examples"),
+        #     join(result_folder, "obj", "examples"),
+        #     join(result_folder, "png", "examples"),
+        #     join(result_folder, "vid", "examples"),
+        # ]
+
+        # for directory in directories:
+        #     # Check if directory exists
+        #     if not os.path.exists(directory):
+        #         print(f"The directory {directory} does not exist.")
+        #         continue
+
+        #     # Get the list of all files
+        #     for filename in os.listdir(directory):
+        #         file_path = os.path.join(directory, filename)
+
+        #         # Ensure that it's a file, not a directory or a sub-directory
+        #         if os.path.isfile(file_path):
+        #             destination_path = os.path.join(
+        #                 os.path.dirname(directory), filename
+        #             )
+
+        #             # Copy the file
+        #             shutil.copy(file_path, destination_path)
+        #             print(f"Copied {file_path} to {destination_path}")
+        # ####################################################################
 
         bpy.ops.wm.obj_import(filepath=full_obj)
 
@@ -963,16 +1009,19 @@ class ExecuteAvatarizer(Operator):
 
         # Check if the selected image's corresponding full.obj file exists
         result_folder = join(path_addon, "ECON", "results", "econ")
+        # full_obj = join(
+        #     result_folder,
+        #     "obj",
+        #     "examples",
+        #     os.path.splitext(econ_prop.selected_image)[0] + "_0_full.obj",
+        # )
+
+        # =========this code should be used when the ECON Windows version directory structure is fixed===========
         full_obj = join(
             result_folder,
             "obj",
-            "examples",
             os.path.splitext(econ_prop.selected_image)[0] + "_0_full.obj",
         )
-
-        # =========this code should be used when the ECON Windows version directory structure is fixed===========
-        # full_obj = join(result_folder, 'obj',
-        #                 os.path.splitext(econ_prop.selected_image)[0] + '_0_full.obj')
         # =======================================================================================================
 
         if not os.path.isfile(full_obj):
@@ -980,35 +1029,6 @@ class ExecuteAvatarizer(Operator):
                 {"ERROR"}, "No full.obj file exits. Please generate 3D model first"
             )
             return {"CANCELLED"}
-
-        ################### Temporal bug resolution #######################
-        directories = [
-            join(result_folder, "BNI", "examples"),
-            join(result_folder, "obj", "examples"),
-            join(result_folder, "png", "examples"),
-            join(result_folder, "vid", "examples"),
-        ]
-
-        for directory in directories:
-            # Check if directory exists
-            if not os.path.exists(directory):
-                print(f"The directory {directory} does not exist.")
-                continue
-
-            # Get the list of all files
-            for filename in os.listdir(directory):
-                file_path = os.path.join(directory, filename)
-
-                # Ensure that it's a file, not a directory or a sub-directory
-                if os.path.isfile(file_path):
-                    destination_path = os.path.join(
-                        os.path.dirname(directory), filename
-                    )
-
-                    # Copy the file
-                    shutil.copy(file_path, destination_path)
-                    print(f"Copied {file_path} to {destination_path}")
-        ####################################################################
 
         path_venv = econ_prop.str_venv_path
         path_venv_full = join(path_venv, econ_prop.str_custom_venv_name)
