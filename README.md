@@ -22,10 +22,17 @@ import sys
 subprocess.check_call([sys.executable, "-m", "pip", "install", "PyYAML"])
 ```
 
+## Initial Setup
+
+Initial execution requires administrative privileges. Please run Blender as an administrator and go through the installation/execution process once.
+
+You will need a HuggingFace token. This should be saved at `C:\Users\{USER NAME}\AppData\Roaming\Blender Foundation\Blender\{BLENDER VERSION}\scripts\addons\CEB_ECON-main\ECON\TEXTure\`. Save the token text as a .txt file and remove the .txt extension.
+
 ## Release Notes
 
 - **May 26, 2023:**
   - Fix TEXTure install bug
+  - Fix IFNet option
 - **May 25, 2023:**
   - Fix imperfect texturing (TEXTure)
 
