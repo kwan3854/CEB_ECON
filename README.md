@@ -9,7 +9,7 @@ This project contains unofficial updates for the [CEB_ECON](https://carlosedubar
 
 > Tuned version of ECON & TEXTure for CEB_ECON is available in CEB_ECON ifself and link down below
 >
-> - [tuned ECON](https://github.com/kwan3854/ECON)
+> - ~~[tuned ECON](https://github.com/kwan3854/ECON)~~ Merged to official ECON
 > - [tuned TEXTure](https://github.com/kwan3854/TEXTure_for_ECON)
 
 ## Prerequisites
