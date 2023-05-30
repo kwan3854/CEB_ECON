@@ -17,7 +17,6 @@ import shutil
 ### TEST ###
 import bpy
 import os
-import yaml
 import urllib.request
 import zipfile
 from bpy.props import StringProperty, FloatProperty, BoolProperty, IntProperty
