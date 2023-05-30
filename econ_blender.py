@@ -1082,8 +1082,8 @@ class ECON_SaveConfig(Operator):
         data["bni"]["use_smpl"] = use_smpl_data
         data["bni"]["thickness"] = float(econ_prop.thickness)
         data["bni"]["k"] = int(econ_prop.k)
-        data["bni"]["hps_type"] = econ_prop.hps_type
-        data["bni"]["texture_src"] = econ_prop.texture_src
+        # data["bni"]["hps_type"] = econ_prop.hps_type
+        # data["bni"]["texture_src"] = econ_prop.texture_src
         data["bni"]["use_ifnet"] = econ_prop.use_ifnet
 
         with open(config_path, "w") as f:

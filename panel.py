@@ -122,8 +122,8 @@ class ECON_PT_generatation_panel(bpy.types.Panel):
         rowA.prop(econ_prop, "use_smpl_face", index=1, text="Use SMPL Face")
         rowA.prop(econ_prop, "thickness")
         rowA.prop(econ_prop, "k")
-        rowA.prop(econ_prop, "hps_type")
-        rowA.prop(econ_prop, "texture_src")
+        # rowA.prop(econ_prop, "hps_type")
+        # rowA.prop(econ_prop, "texture_src")
         rowA.prop(econ_prop, "use_ifnet")
         rowA.operator("econ.save_config")
 
@@ -455,16 +455,16 @@ class ECONMySettings(PropertyGroup):
     use_smpl_face: BoolProperty(name="Use SMPL Face", default=(False))
     thickness: FloatProperty(name="Thickness", default=0.02)
     k: IntProperty(name="K", default=4)
-    hps_type: EnumProperty(
-        name="HPS Type",
-        items=[("pixie", "Pixie", ""), ("pymaf", "Pymaf", "")],
-        default="pixie",
-    )
-    texture_src: EnumProperty(
-        name="Texture Source",
-        items=[("image", "Image", ""), ("stable_diffusion", "Stable Diffusion", "")],
-        default="image",
-    )
+    # hps_type: EnumProperty(
+    #     name="HPS Type",
+    #     items=[("pixie", "Pixie", ""), ("pymaf", "Pymaf", "")],
+    #     default="pixie",
+    # )
+    # texture_src: EnumProperty(
+    #     name="Texture Source",
+    #     items=[("image", "Image", ""), ("stable_diffusion", "Stable Diffusion", "")],
+    #     default="image",
+    # )
     use_ifnet: BoolProperty(name="Use IFNet", default=False)
 
     stable_diffusion_prompt: StringProperty(name="Stable Diffusion Prompt", default="")
