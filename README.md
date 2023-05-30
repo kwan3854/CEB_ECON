@@ -20,6 +20,7 @@ Before using these updates, please ensure to install PyYAML as it is required fo
 import subprocess
 import sys
 subprocess.check_call([sys.executable, "-m", "pip", "install", "PyYAML"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "ruamel.yaml"])
 ```
 
 ## Initial Setup
