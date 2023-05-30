@@ -59,21 +59,18 @@ This project contains unofficial updates for the [CEB_ECON](https://carlosedubar
    ```python
    import subprocess
    import sys
-   subprocess.check_call([sys.executable, "-m", "pip", "install", "PyYAML"])
    subprocess.check_call([sys.executable, "-m", "pip", "install", "ruamel.yaml"])
    ```
-
+   
 5. Press the `Enter` key and ensure that it returns 0:
 
    ```python
    >>> import subprocess
    >>> import sys
-   >>> subprocess.check_call([sys.executable, "-m", "pip", "install", "PyYAML"])
-   0
    >>> subprocess.check_call([sys.executable, "-m", "pip", "install", "ruamel.yaml"])
    0
    ```
-
+   
 6. Navigate to `Edit` -> `Preferences` -> `Add-ons`. Click on the `Install` button and select the `CEB_ECON-main.zip` file. Then, click on `Install Add-on`.
 
 7. Enable the CEB_ECON add-on by clicking on `General: CEB ECON`. Close the Preferences window.
