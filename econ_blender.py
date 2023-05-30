@@ -816,6 +816,14 @@ class ExecuteTEXTure(Operator):
         src_dir = join(path_addon, "ECON", "results", "econ", "cache")
         dest_dir = join(dest, "cache")
 
+        if econ_prop.selected_image == "":
+            self.report({"ERROR"}, "No image selected. Please select an image.")
+            return {"CANCELLED"}
+        # check if the obj file exists
+        if not os.path.exists(join(src_dir, os.path.splitext(econ_prop.selected_image)[0], "mesh.obj")):
+            self.report({"ERROR"}, "Avatar obj file not found. Run Generate Animatable 3D Model first.")
+            return {"CANCELLED"}
+
         if os.path.exists(dest_dir):
             shutil.rmtree(dest_dir)
 
