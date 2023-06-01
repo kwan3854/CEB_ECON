@@ -1,6 +1,6 @@
 # CEB_ECON Unofficial Update
 
-![Demo](assets\Demo.gif)
+![Demo](assets/Demo.gif)
 
 This project contains unofficial updates for the [CEB_ECON](https://carlosedubarreto.gumroad.com/l/CEB_ECON) Blender add-on.
 
