@@ -1,5 +1,7 @@
 # CEB_ECON Unofficial Update
 
+![Demo](assets\Demo.gif)
+
 This project contains unofficial updates for the [CEB_ECON](https://carlosedubarreto.gumroad.com/l/CEB_ECON) Blender add-on.
 
 - [ECON](https://github.com/YuliangXiu/ECON) is is designed for "Human digitization from a color image"
@@ -7,12 +9,14 @@ This project contains unofficial updates for the [CEB_ECON](https://carlosedubar
 
 ---
 
-> Tuned version of ECON & TEXTure for CEB_ECON is available in CEB_ECON ifself and link down below
->
 > - ~~[tuned ECON](https://github.com/kwan3854/ECON)~~ Merged to official ECON
 > - [tuned TEXTure](https://github.com/kwan3854/TEXTure_for_ECON)
 
 ## Installation Guide
+
+### [Tutorial Video](https://youtu.be/SDVfCeaI4AY)
+
+- Tutorial video has been added 
 
 ### Download
 
@@ -144,6 +148,9 @@ This project contains unofficial updates for the [CEB_ECON](https://carlosedubar
 7. After the first run, Blender no longer requires administrative privileges.
 
 ## Release Notes
+
+- **June 1, 2023:**
+  - Uploaded Tutorial video
 
 - **May 26, 2023:**
   - Fix TEXTure install bug
